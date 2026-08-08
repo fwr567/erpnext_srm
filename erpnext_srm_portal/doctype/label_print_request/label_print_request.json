@@ -1,0 +1,17 @@
+{
+  "doctype": "DocType",
+  "name": "Label Print Request",
+  "module": "ERPNext SRM Portal",
+  "custom": true,
+  "fields": [
+    {"fieldname":"supplier","label":"Supplier","fieldtype":"Link","options":"Supplier","reqd":1},
+    {"fieldname":"item_code","label":"Item Code","fieldtype":"Link","options":"Item","reqd":1},
+    {"fieldname":"serials_assigned","label":"Serials Assigned","fieldtype":"Text"},
+    {"fieldname":"print_count","label":"Print Count","fieldtype":"Int","default":1},
+    {"fieldname":"created_by","label":"Created By","fieldtype":"Data"}
+  ],
+  "permissions": [
+    {"role":"Supplier","read":1,"write":0,"create":0},
+    {"role":"System Manager","read":1,"write":1,"create":1}
+  ]
+}

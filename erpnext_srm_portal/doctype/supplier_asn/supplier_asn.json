@@ -1,0 +1,16 @@
+{
+  "doctype": "DocType",
+  "name": "Supplier ASN",
+  "module": "ERPNext SRM Portal",
+  "custom": true,
+  "fields": [
+    {"fieldname":"supplier","label":"Supplier","fieldtype":"Link","options":"Supplier","reqd":1},
+    {"fieldname":"po_reference","label":"Purchase Order","fieldtype":"Link","options":"Purchase Order"},
+    {"fieldname":"status","label":"Status","fieldtype":"Select","options":"Draft\nSubmitted\nApproved\nRejected","default":"Draft"},
+    {"fieldname":"items","label":"Items","fieldtype":"Table","options":"Supplier ASN Item"},
+    {"fieldname":"linked_purchase_receipt","label":"Linked Purchase Receipt","fieldtype":"Link","options":"Purchase Receipt"}
+  ],
+  "permissions": [
+    {"role":"Supplier","read":1,"write":1,"create":1}
+  ]
+}

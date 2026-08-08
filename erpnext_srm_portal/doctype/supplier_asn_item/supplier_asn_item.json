@@ -1,0 +1,16 @@
+{
+  "doctype": "DocType",
+  "name": "Supplier ASN Item",
+  "module": "ERPNext SRM Portal",
+  "custom": true,
+  "istable": true,
+  "fields": [
+    {"fieldname":"item_code","label":"Item Code","fieldtype":"Link","options":"Item","reqd":1},
+    {"fieldname":"qty","label":"Qty","fieldtype":"Float","reqd":1},
+    {"fieldname":"uom","label":"UOM","fieldtype":"Link","options":"UOM"},
+    {"fieldname":"serials","label":"Serials","fieldtype":"Text","description":"One serial per line"}
+  ],
+  "permissions": [
+    {"role":"Supplier","read":1,"write":1,"create":1}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "doctype": "DocType",
+  "name": "Serial Pool",
+  "module": "ERPNext SRM Portal",
+  "custom": true,
+  "fields": [
+    {"fieldname":"serial","label":"Serial","fieldtype":"Data","reqd":1},
+    {"fieldname":"item_code","label":"Item Code","fieldtype":"Link","options":"Item","reqd":1},
+    {"fieldname":"status","label":"Status","fieldtype":"Select","options":"reserved\nprinted\nused\nreleased","default":"reserved"},
+    {"fieldname":"reserved_for","label":"Reserved For","fieldtype":"Data"},
+    {"fieldname":"created_by","label":"Created By","fieldtype":"Data"}
+  ],
+  "permissions": [
+    {"role":"Supplier","read":1,"write":0,"create":0},
+    {"role":"System Manager","read":1,"write":1,"create":1}
+  ]
+}
