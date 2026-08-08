@@ -14,25 +14,46 @@
     <label>Item Code:</label><input name="item_code" id="item_code"/><br/>
     <label>Qty:</label><input name="qty" id="qty" type="number" value="1"/><br/>
     <label>Serials (每行一个):</label><textarea id="serials" name="serials"></textarea><br/>
-    <button type="button" id="submit-asn">提交 ASN</button>
+    <label>Printer IP (optional):</label><input name="printer_ip" id="printer_ip" placeholder="192.168.1.100"/><br/>
+    <button type="button" id="submit-asn">提交 ASN 并打印标签</button>
   </form>
 
   <div id="result"></div>
 
   <script>
+    $(document).ready(function(){
+      // try auto mapping on page load
+      tryAutoMapUser(function(mapped){
+        if(mapped) {
+          $('#result').append('<div>已自动映射用户到供应商: ' + mapped + '</div>');
+        }
+      }, function(err){
+        console.warn('Auto-map failed', err);
+      });
+    });
+
     $("#submit-asn").click(function(){
       const supplier = $("#supplier").val();
       const po = $("#po_reference").val();
       const item = $("#item_code").val();
       const qty = Number($("#qty").val());
       const serials = $("#serials").val().split('\n').map(s=>s.trim()).filter(s=>s);
+      const printer_ip = $('#printer_ip').val();
       const payload = {
         supplier: supplier,
         po_reference: po,
         items: [{item_code: item, qty: qty, serials: serials}]
       };
       createSupplierASN(payload, function(message){
-        $("#result").text('ASN 提交成功: ' + message);
+        $('#result').append('<div>ASN 创建并提交成功: ' + message + '</div>');
+        // if serials were platform-generated, we can request print
+        if(printer_ip && serials.length) {
+          requestZplPrint(serials, item, supplier, printer_ip, function(resp){
+            $('#result').append('<div>打印请求已发送</div>');
+          }, function(err){
+            $('#result').append('<div>打印失败: ' + JSON.stringify(err) + '</div>');
+          });
+        }
       }, function(err){
         $("#result").text('提交失败: ' + JSON.stringify(err));
       });
