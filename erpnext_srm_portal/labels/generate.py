@@ -1,6 +1,8 @@
+# Update: label generation uses serial_allocator
+from erpnext_srm_portal.labels.serial_generator import generate_serials_robust
+from erpnext_srm_portal.labels.serial_allocator import get_serials
 import frappe
 from frappe import _
-from erpnext_srm_portal.labels.serial_generator import generate_serials_robust
 from frappe.utils import now_datetime
 import io
 from PIL import Image
@@ -9,9 +11,14 @@ import socket
 
 @frappe.whitelist()
 def request_label_print(supplier, item_code, qty=1, reserve_mode='printed'):
-    serials = generate_serials_robust(supplier, item_code, int(qty))
-    # create Serial Pool entries already done by generator
-    # create Label Print Request
+    # Try fast allocator (DB block + local cache)
+    try:
+        serials = get_serials(supplier, item_code, int(qty), block_size=200)
+    except Exception as e:
+        # fallback to robust generator
+        frappe.log_error(message=str(e), title='request_label_print.alloc_fail')
+        serials = generate_serials_robust(supplier, item_code, int(qty))
+    # create Label Print Request doc
     lpr = frappe.get_doc({
         "doctype": "Label Print Request",
         "supplier": supplier,
@@ -22,7 +29,7 @@ def request_label_print(supplier, item_code, qty=1, reserve_mode='printed'):
     }).insert(ignore_permissions=True)
     return {"serials": serials, "print_record": lpr.name}
 
-# other functions unchanged (generate_qr_png, generate_label_pdf, get_zpl_for_serial, generate_zpl_batch, send_zpl_to_printer, request_reprint, approve_reprint)
+# other functions: generate_qr_png, generate_label_pdf, get_zpl_for_serial, generate_zpl_batch, send_zpl_to_printer, request_reprint, approve_reprint
 
 def generate_qr_png(serial_value):
     img = qrcode.make(serial_value)
