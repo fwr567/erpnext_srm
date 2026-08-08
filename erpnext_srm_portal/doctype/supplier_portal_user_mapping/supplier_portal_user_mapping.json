@@ -1,0 +1,14 @@
+{
+  "doctype": "DocType",
+  "name": "Supplier Portal User Mapping",
+  "module": "ERPNext SRM Portal",
+  "custom": true,
+  "fields": [
+    {"fieldname":"user","label":"User","fieldtype":"Data","reqd":1,"description":"Portal user email or user id"},
+    {"fieldname":"supplier","label":"Supplier","fieldtype":"Link","options":"Supplier","reqd":1}
+  ],
+  "permissions": [
+    {"role":"System Manager","read":1,"write":1,"create":1},
+    {"role":"Website User","read":1,"write":0,"create":0}
+  ]
+}

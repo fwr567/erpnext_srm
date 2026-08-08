@@ -2,32 +2,23 @@ import frappe
 from frappe import _
 
 @frappe.whitelist()
-def create_supplier_asn(supplier, po_reference=None, items=None):
-    """Create Supplier ASN document from portal. `items` expected as JSON string or list of dicts with keys: item_code, qty, uom (opt), serials (newline-separated string or list)."""
-    frappe.only_for('Website Manager', perm_type='read')
-    # allow website users but still check
-    import json
-    if isinstance(items, str):
-        try:
-            items = json.loads(items)
-        except Exception:
-            frappe.throw(_("Invalid items payload"))
-    if not items or not isinstance(items, list):
-        frappe.throw(_("Items payload required"))
-    doc = frappe.new_doc('Supplier ASN')
-    doc.supplier = supplier
-    if po_reference:
-        doc.po_reference = po_reference
-    for it in items:
-        row = doc.append('items', {})
-        row.item_code = it.get('item_code')
-        row.qty = it.get('qty') or 0
-        if it.get('uom'):
-            row.uom = it.get('uom')
-        serials = it.get('serials')
-        if isinstance(serials, list):
-            row.serials = '\n'.join(serials)
-        else:
-            row.serials = serials
-    doc.insert()
+def map_user_to_supplier(user=None, supplier=None):
+    """Map a portal user (email or id) to a Supplier. Only System Manager or the user themselves can create mapping.
+
+    Usage: call as logged-in user. If user not provided, use frappe.session.user
+    """
+    if not user:
+        user = frappe.session.user
+    if not supplier:
+        frappe.throw(_("supplier is required"))
+    # Only allow mapping if current user is System Manager or same user
+    if frappe.session.user != user and not frappe.has_role('System Manager'):
+        frappe.throw(_("Only System Manager can map other users"))
+    # create or update mapping
+    doc = frappe.get_doc({
+        'doctype': 'Supplier Portal User Mapping',
+        'user': user,
+        'supplier': supplier
+    })
+    doc.insert(ignore_permissions=True)
     return doc.name

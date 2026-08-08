@@ -7,9 +7,8 @@ class SupplierASN(Document):
     def validate(self):
         # Ensure every item line has serials or batch info before submit
         for row in self.items:
-            # Only check when serials is required: we'll enforce on submit
+            # Allow drafts without serials
             if self.docstatus == 0:
-                # allow drafts without serials
                 continue
             if not getattr(row, "serials", None) or not any([s.strip() for s in (row.serials or "").splitlines()]):
                 frappe.throw(_("第 {0} 行缺少序列/批次，无法提交").format(row.idx))
@@ -26,3 +25,18 @@ class SupplierASN(Document):
             self.db_set('status', 'Submitted')
         except Exception:
             pass
+
+    def on_update(self):
+        # If status changed to Approved and no linked PR exists, create PR
+        try:
+            if getattr(self, 'status', '') == 'Approved' and not getattr(self, 'linked_purchase_receipt', None):
+                # Use the API function to create PR
+                from erpnext_srm_portal.api.asn import submit_asn_and_create_purchase_receipt
+                try:
+                    pr_name = submit_asn_and_create_purchase_receipt(self.name)
+                    # already set in API
+                except Exception as e:
+                    # Log error but don't block
+                    frappe.log_error(message=str(e), title='Supplier ASN auto PR creation failed')
+        except Exception as e:
+            frappe.log_error(message=str(e), title='Supplier ASN on_update error')

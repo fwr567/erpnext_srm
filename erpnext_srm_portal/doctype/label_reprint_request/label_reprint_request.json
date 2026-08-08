@@ -1,0 +1,17 @@
+{
+  "doctype": "DocType",
+  "name": "Label Reprint Request",
+  "module": "ERPNext SRM Portal",
+  "custom": true,
+  "fields": [
+    {"fieldname":"label_print_request","label":"Label Print Request","fieldtype":"Link","options":"Label Print Request","reqd":1},
+    {"fieldname":"reason","label":"Reason","fieldtype":"Small Text","reqd":1},
+    {"fieldname":"status","label":"Status","fieldtype":"Select","options":"Requested\nApproved\nRejected","default":"Requested"},
+    {"fieldname":"requested_by","label":"Requested By","fieldtype":"Data"},
+    {"fieldname":"approved_by","label":"Approved By","fieldtype":"Data"}
+  ],
+  "permissions": [
+    {"role":"System Manager","read":1,"write":1,"create":1},
+    {"role":"Website User","read":1,"write":0,"create":0}
+  ]
+}
