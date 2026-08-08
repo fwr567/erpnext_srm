@@ -1,28 +1,16 @@
 import frappe
 from frappe import _
+from erpnext_srm_portal.approvals.utils import get_approver_emails
 
 
 def send_overprint_notification(overprint_name):
     """Send notification (email + ToDo) to configured approvers when Overprint Request (or Return Request) is created.
-    Looks for approvers in site_config under srm.approvers (list of emails). If not set, falls back to System Manager users.
+    Looks for approvers in site_config under srm.approvers (list of emails) or srm.approver_roles; falls back to System Manager users.
     Creates a ToDo for each approver so it appears in Desk as an actionable item.
     Sends an HTML email with approve/reject links pointing to the portal approvals page.
     """
     try:
-        site_conf = frappe.get_site_config() if hasattr(frappe, 'get_site_config') else {}
-        approvers = []
-        if site_conf and site_conf.get('srm') and site_conf.get('srm').get('approvers'):
-            approvers = site_conf.get('srm').get('approvers')
-        if not approvers:
-            users = frappe.get_all('Has Role', filters={'role':'System Manager'}, fields=['parent'])
-            approvers = []
-            for u in users:
-                try:
-                    email = frappe.get_value('User', u.get('parent'), 'email')
-                    if email:
-                        approvers.append(email)
-                except Exception:
-                    continue
+        approvers = get_approver_emails()
         if not approvers:
             frappe.log_error(message=f'No approvers found for notification {overprint_name}', title='overprint.notify')
             return False
