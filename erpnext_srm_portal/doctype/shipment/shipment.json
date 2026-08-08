@@ -1,0 +1,18 @@
+{
+  "doctype": "DocType",
+  "name": "Shipment",
+  "module": "ERPNext SRM Portal",
+  "custom": true,
+  "fields": [
+    {"fieldname":"supplier","label":"Supplier","fieldtype":"Link","options":"Supplier","reqd":1},
+    {"fieldname":"po_reference","label":"Purchase Order","fieldtype":"Link","options":"Purchase Order"},
+    {"fieldname":"tracking_no","label":"Tracking No","fieldtype":"Data"},
+    {"fieldname":"status","label":"Status","fieldtype":"Select","options":"Draft\nShipped\nIn-Transit\nDelivered\nCancelled","default":"Draft"},
+    {"fieldname":"items","label":"Items","fieldtype":"Table","options":"Shipment Item"},
+    {"fieldname":"shipped_on","label":"Shipped On","fieldtype":"Datetime"}
+  ],
+  "permissions": [
+    {"role":"Supplier","read":1,"write":1,"create":1},
+    {"role":"System Manager","read":1,"write":1,"create":1}
+  ]
+}
