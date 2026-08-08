@@ -1,0 +1,20 @@
+{
+  "doctype": "DocType",
+  "name": "Return Request",
+  "module": "ERPNext SRM Portal",
+  "custom": true,
+  "fields": [
+    {"fieldname":"supplier","label":"Supplier","fieldtype":"Link","options":"Supplier","reqd":1},
+    {"fieldname":"linked_purchase_receipt","label":"Purchase Receipt","fieldtype":"Link","options":"Purchase Receipt"},
+    {"fieldname":"linked_purchase_order","label":"Purchase Order","fieldtype":"Link","options":"Purchase Order"},
+    {"fieldname":"items","label":"Items","fieldtype":"Table","options":"Return Request Item"},
+    {"fieldname":"reason","label":"Reason","fieldtype":"Small Text"},
+    {"fieldname":"status","label":"Status","fieldtype":"Select","options":"Requested\nApproved\nRejected\nProcessed","default":"Requested"},
+    {"fieldname":"requested_by","label":"Requested By","fieldtype":"Data"},
+    {"fieldname":"approved_by","label":"Approved By","fieldtype":"Data"}
+  ],
+  "permissions": [
+    {"role":"Supplier","read":1,"write":0,"create":1},
+    {"role":"System Manager","read":1,"write":1,"create":1}
+  ]
+}
