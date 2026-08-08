@@ -1,0 +1,21 @@
+{
+  "doctype": "DocType",
+  "name": "Overprint Request",
+  "module": "ERPNext SRM Portal",
+  "custom": true,
+  "fields": [
+    {"fieldname":"supplier","label":"Supplier","fieldtype":"Link","options":"Supplier","reqd":1},
+    {"fieldname":"po_reference","label":"Purchase Order","fieldtype":"Link","options":"Purchase Order"},
+    {"fieldname":"item_code","label":"Item Code","fieldtype":"Link","options":"Item","reqd":1},
+    {"fieldname":"requested_qty","label":"Requested Qty","fieldtype":"Float","reqd":1},
+    {"fieldname":"reason","label":"Reason","fieldtype":"Small Text"},
+    {"fieldname":"status","label":"Status","fieldtype":"Select","options":"Requested\nApproved\nRejected","default":"Requested"},
+    {"fieldname":"requested_by","label":"Requested By","fieldtype":"Data"},
+    {"fieldname":"approved_by","label":"Approved By","fieldtype":"Data"},
+    {"fieldname":"linked_label_print_request","label":"Linked Label Print Request","fieldtype":"Link","options":"Label Print Request"}
+  ],
+  "permissions": [
+    {"role":"Supplier","read":1,"write":0,"create":1},
+    {"role":"System Manager","read":1,"write":1,"create":1}
+  ]
+}
