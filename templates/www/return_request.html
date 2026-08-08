@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Return Request</title>
+  <script src="/assets/frappe/js/lib/jquery/jquery.min.js"></script>
+  <script src="/assets/erpnext_srm_portal/js/portal.js"></script>
+</head>
+<body>
+  <h2>提交退货申请（示例）</h2>
+  <form id="return-form">
+    <label>Supplier:</label><input name="supplier" id="supplier" placeholder="Supplier name"/><br/>
+    <label>Linked PO:</label><input name="linked_po" id="linked_po"/><br/>
+    <label>Linked PR:</label><input name="linked_pr" id="linked_pr"/><br/>
+    <label>Item Code:</label><input name="item_code" id="item_code"/><br/>
+    <label>Qty:</label><input name="qty" id="qty" type="number" value="1"/><br/>
+    <label>Serials (每行一个):</label><textarea id="serials" name="serials"></textarea><br/>
+    <label>Reason:</label><textarea id="reason" name="reason"></textarea><br/>
+    <button type="button" id="submit-return">提交退货</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    $("#submit-return").click(function(){
+      const supplier = $("#supplier").val();
+      const linked_po = $("#linked_po").val();
+      const linked_pr = $("#linked_pr").val();
+      const item = $("#item_code").val();
+      const qty = Number($("#qty").val());
+      const serials = $("#serials").val().split('\n').map(s=>s.trim()).filter(s=>s);
+      const reason = $('#reason').val();
+      const payload = {
+        supplier: supplier,
+        linked_purchase_order: linked_po || null,
+        linked_purchase_receipt: linked_pr || null,
+        items: [{item_code: item, qty: qty, serials: serials}],
+        reason: reason
+      };
+      createReturnRequest(payload, function(message){
+        $("#result").text('退货申请已提交: ' + message);
+      }, function(err){
+        $("#result").text('提交失败: ' + JSON.stringify(err));
+      });
+    });
+  </script>
+</body>
+</html>

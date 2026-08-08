@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Overprint / Return Status</title>
+  <script src="/assets/frappe/js/lib/jquery/jquery.min.js"></script>
+  <script src="/assets/erpnext_srm_portal/js/portal.js"></script>
+</head>
+<body>
+  <h2>查询退货/超印申请状态（示例）</h2>
+  <label>Request Name:</label><input id="request_name" placeholder="Return Request or Overprint Request name"/>
+  <button id="check-status">查询状态</button>
+  <pre id="status-output"></pre>
+
+  <script>
+    $("#check-status").click(function(){
+      const name = $("#request_name").val().trim();
+      if(!name) return;
+      viewReturnRequestStatus(name, function(message){
+        $('#status-output').text(JSON.stringify(message, null, 2));
+      }, function(err){
+        $('#status-output').text('查询失败: ' + JSON.stringify(err));
+      });
+    });
+  </script>
+</body>
+</html>

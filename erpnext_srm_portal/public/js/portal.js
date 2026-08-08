@@ -62,3 +62,46 @@ function requestZplPrint(serials, item_code, supplier, printer_ip, successCb, er
     }
   });
 }
+
+function createReturnRequest(payload, successCb, errorCb) {
+  // payload: {supplier, items: [{item_code, qty, serials}], linked_purchase_receipt?, linked_purchase_order?, reason}
+  frappe.call({
+    method: 'erpnext_srm_portal.api.returns.create_return_request',
+    args: payload,
+    callback: function(r) {
+      if(!r.exc) {
+        successCb && successCb(r.message);
+      } else {
+        errorCb && errorCb(r.exc);
+      }
+    }
+  });
+}
+
+function viewReturnRequestStatus(name, successCb, errorCb) {
+  frappe.call({
+    method: 'frappe.client.get',
+    args: {doctype: 'Return Request', name: name},
+    callback: function(r) {
+      if(!r.exc) {
+        successCb && successCb(r.message);
+      } else {
+        errorCb && errorCb(r.exc);
+      }
+    }
+  });
+}
+
+function requestOverprint(payload, successCb, errorCb) {
+  frappe.call({
+    method: 'erpnext_srm_portal.labels.generate.request_overprint',
+    args: payload,
+    callback: function(r) {
+      if(!r.exc) {
+        successCb && successCb(r.message);
+      } else {
+        errorCb && errorCb(r.exc);
+      }
+    }
+  });
+}
