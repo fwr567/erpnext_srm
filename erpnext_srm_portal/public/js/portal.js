@@ -105,3 +105,31 @@ function requestOverprint(payload, successCb, errorCb) {
     }
   });
 }
+
+function getPendingRequests(successCb, errorCb) {
+  frappe.call({
+    method: 'erpnext_srm_portal.api.approvals.get_pending_requests',
+    args: {},
+    callback: function(r) {
+      if(!r.exc) {
+        successCb && successCb(r.message);
+      } else {
+        errorCb && errorCb(r.exc);
+      }
+    }
+  });
+}
+
+function approveRequest(docType, name, approve=true, successCb, errorCb) {
+  frappe.call({
+    method: 'erpnext_srm_portal.api.approvals.approve_request',
+    args: {doctype: docType, name: name, approve: approve},
+    callback: function(r) {
+      if(!r.exc) {
+        successCb && successCb(r.message);
+      } else {
+        errorCb && errorCb(r.exc);
+      }
+    }
+  });
+}

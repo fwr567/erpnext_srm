@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Approvals</title>
+  <script src="/assets/frappe/js/lib/jquery/jquery.min.js"></script>
+  <script src="/assets/erpnext_srm_portal/js/portal.js"></script>
+  <style>
+    table{border-collapse:collapse;width:100%}
+    th,td{border:1px solid #ddd;padding:8px}
+    th{background:#f4f4f4}
+    .btn{padding:6px 10px;border-radius:4px;text-decoration:none;background:#007bff;color:#fff}
+    .btn-danger{background:#dc3545}
+  </style>
+</head>
+<body>
+  <h2>待审批申请</h2>
+  <div id="list"></div>
+
+  <script>
+    function renderList(items){
+      if(!items || (items.overprint||[]).length==0 && (items.returns||[]).length==0){
+        $('#list').html('<p>当前没有待审批申请。</p>');
+        return;
+      }
+      var html = '<h3>Overprint Requests</h3>';
+      html += '<table><tr><th>Name</th><th>Supplier</th><th>Item</th><th>Qty</th><th>Actions</th></tr>';
+      (items.overprint||[]).forEach(function(o){
+        html += '<tr>'+
+                '<td>'+o.name+'</td>'+
+                '<td>'+o.supplier+'</td>'+
+                '<td>'+o.item_code+'</td>'+
+                '<td>'+o.requested_qty+'</td>'+
+                '<td><a class="btn" href="#" onclick="approveRequest(\'Overprint Request\', \''+o.name+'\', true, function(){location.reload()})">批准</a> <a class="btn btn-danger" href="#" onclick="approveRequest(\'Overprint Request\', \''+o.name+'\', false, function(){location.reload()})">拒绝</a></td>'+
+                '</tr>';
+      });
+      html += '</table>';
+      html += '<h3>Return Requests</h3>';
+      html += '<table><tr><th>Name</th><th>Supplier</th><th>Linked PO/PR</th><th>Reason</th><th>Actions</th></tr>';
+      (items.returns||[]).forEach(function(r){
+        html += '<tr>'+
+                '<td>'+r.name+'</td>'+
+                '<td>'+r.supplier+'</td>'+
+                '<td>'+ (r.linked_purchase_order || r.linked_purchase_receipt || '') +'</td>'+
+                '<td>'+ (r.reason || '') +'</td>'+
+                '<td><a class="btn" href="#" onclick="approveRequest(\'Return Request\', \''+r.name+'\', true, function(){location.reload()})">批准</a> <a class="btn btn-danger" href="#" onclick="approveRequest(\'Return Request\', \''+r.name+'\', false, function(){location.reload()})">拒绝</a></td>'+
+                '</tr>';
+      });
+      html += '</table>';
+      $('#list').html(html);
+    }
+
+    $(document).ready(function(){
+      getPendingRequests(function(items){
+        renderList(items);
+      }, function(err){
+        $('#list').html('<p>加载失败: '+JSON.stringify(err)+'</p>');
+      });
+    });
+  </script>
+</body>
+</html>
