@@ -1,0 +1,16 @@
+{
+  "doctype": "DocType",
+  "name": "SRM Settings",
+  "module": "ERPNext SRM Portal",
+  "custom": true,
+  "issingle": true,
+  "fields": [
+    {"fieldname":"approvers","label":"Approver Emails","fieldtype":"Text","description":"Comma or newline separated list of approver emails"},
+    {"fieldname":"approver_roles","label":"Approver Roles","fieldtype":"Data","description":"Comma separated list of Role names to treat as approvers"},
+    {"fieldname":"allowed_overprint_threshold","label":"Allowed Overprint Threshold","fieldtype":"Float","default":0}
+  ],
+  "permissions": [
+    {"role":"System Manager","read":1,"write":1,"create":1},
+    {"role":"Supplier","read":1,"write":0,"create":0}
+  ]
+}
